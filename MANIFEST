@@ -1,0 +1,13 @@
+Changes
+lib/Mojar/Message/BulkSms.pm
+lib/Mojar/Message.pm
+LICENSE
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+README.md
+test/00-load.t
+test/20-bulksms-mocked.t
+test/21-bulksms-real.t
+test/manifest.t
+test/pod.t
