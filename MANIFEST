@@ -11,3 +11,4 @@ test/20-bulksms-mocked.t
 test/21-bulksms-real.t
 test/manifest.t
 test/pod.t
+test/version.t

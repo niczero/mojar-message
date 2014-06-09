@@ -1,7 +1,7 @@
 package Mojar::Message;
 use Mojo::Base -strict;
 
-our $VERSION = 0.121;
+our $VERSION = 1.011;
 
 1;
 __END__
@@ -21,7 +21,7 @@ Interfaces for composing/sending/collecting messages.
 =item Mojar::Message::BulkSms
 
 Includes simple interface for composing and sending SMS messages via the BulkSMS
-service.
+services.
 
 =back
 

@@ -1,12 +1,16 @@
+1.011 2014-06-09
+  * Added asynchronous support (BulkSms).
+
+1.001 2014-06-02
+  * First public release.
+  * Made some functionality overrideable (BulkSms).
 
 0.111 2013-08-09
-  - Made some functionality overrideable.
-  - Extended test scope via mocking.
-  - Improved convenience via stashing.
-  - Improved checking of parameters.
+  * Extended test scope via mocking (BulkSms).
+  * Improved convenience via stashing (BulkSms).
+  * Improved checking of parameters (BulkSms).
 
 0.102 2013-08-04
-  - Initial release.
-  - Made less synchronous.
-  - Improved docn and build vars.
-
+  * Initial release.
+  * Made less synchronous.
+  * Improved documentation and build vars.
