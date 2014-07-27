@@ -1,3 +1,6 @@
+1.021 2014-07-27
+  * Added SMTP sender (Smtp).
+
 1.011 2014-06-09
   * Added asynchronous support (BulkSms).
 

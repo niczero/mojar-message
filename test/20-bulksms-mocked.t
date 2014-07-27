@@ -96,7 +96,7 @@ subtest q{Response} => sub {
 
   $Mojar::Message::BulkSms::response =
       [24, 'invalid msisdn: 44'];
-  my $e;
+  undef $e;
   ok ! $sms->send(sub {$e = $_[1]; $e ? undef : $_[0]}), 'return code';
   ok $e, 'called back error';
   is $e->{code}, 24, 'identified code';
