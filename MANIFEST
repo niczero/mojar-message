@@ -1,6 +1,7 @@
 Changes
-lib/Mojar/Message/BulkSms.pm
 lib/Mojar/Message.pm
+lib/Mojar/Message/BulkSms.pm
+lib/Mojar/Message/Smtp.pm
 LICENSE
 Makefile.PL
 MANIFEST
@@ -9,6 +10,7 @@ README.md
 test/00-load.t
 test/20-bulksms-mocked.t
 test/21-bulksms-real.t
+test/23-smtp-real.t
 test/manifest.t
 test/pod.t
 test/version.t

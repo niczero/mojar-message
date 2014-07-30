@@ -1,3 +1,6 @@
+1.031 2014-07-30
+  * Added attachments (Smtp).
+
 1.021 2014-07-27
   * Added SMTP sender (Smtp).
 
