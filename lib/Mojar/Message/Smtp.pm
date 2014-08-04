@@ -1,7 +1,7 @@
 package Mojar::Message::Smtp;
 use Mojo::Base -base;
 
-our $VERSION = 0.011;
+our $VERSION = 0.021;
 
 use Carp ();
 use MIME::Entity;
@@ -109,13 +109,14 @@ sub send {
   my $fail = sub { $self->fail('Failed to send', @_) };
 
   $self->{Date} = $self->date;
+  $self->{Sender} //= $self->{From};
   $self->{'X-Mailer'} //= "Mojar::Message::Smtp/$VERSION";
 
   my $mime;
   if ($self->attachments) {
     $mime = MIME::Entity->build(
       Type => 'multipart/mixed',
-      $self->headers,
+      $self->headers
     );
     $mime->attach(
       Type => 'text/plain',
