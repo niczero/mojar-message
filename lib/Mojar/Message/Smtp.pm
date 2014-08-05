@@ -1,7 +1,7 @@
 package Mojar::Message::Smtp;
 use Mojo::Base -base;
 
-our $VERSION = 0.021;
+our $VERSION = 0.031;
 
 use Carp ();
 use MIME::Entity;
@@ -69,6 +69,13 @@ sub attach {
 sub set {
   my ($self, %param) = @_;
   %$self = (%$self, %param);
+  return $self;
+}
+
+sub reset {
+  my $self = shift;
+  delete @$self{ grep +(/^[A-Z]/), keys %$self };  # Titlecase fields
+  delete @$self{'body', 'attachments'};
   return $self;
 }
 
