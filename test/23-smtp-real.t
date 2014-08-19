@@ -5,11 +5,11 @@ use Mojar::Message::Smtp;
 
 use Mojar::Config;
 
-my $config = Mojar::Config->load('data/smtp.conf');
-my $email;
-
 plan skip_all => 'set TEST_ACCESS to enable this test (developer only!)'
   unless $ENV{TEST_ACCESS};
+
+my $config = Mojar::Config->load('data/smtp.conf');
+my $email;
 
 subtest q{new} => sub {
   ok $email = Mojar::Message::Smtp->new(

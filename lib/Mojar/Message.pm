@@ -1,7 +1,7 @@
 package Mojar::Message;
 use Mojo::Base -strict;
 
-our $VERSION = 1.051;
+our $VERSION = 1.052;
 
 1;
 __END__
