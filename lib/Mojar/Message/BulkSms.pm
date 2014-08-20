@@ -3,6 +3,7 @@ use Mojo::Base -base;
 
 our $VERSION = 1.001;
 
+use Carp 'croak';
 use Mojar::Log;
 use Mojo::Parameters;
 use Mojo::UserAgent;
@@ -33,10 +34,6 @@ has 'message';
 has ua => sub { Mojo::UserAgent->new(request_timeout => 15) };
 has log => sub { Mojar::Log->new };
 
-# Private function
-
-sub croak { require Carp; goto &Carp::croak; }
-
 # Public methods
 
 sub send {
@@ -44,7 +41,7 @@ sub send {
   my $cb = pop if @_ and ref $_[-1] eq 'CODE';
   return $self->handle_error({
     message => sprintf('Unhandled args (%s)', join ',', @_),
-    code => -1
+    advice => -1
   } => $cb) unless @_ % 2 == 0;
   %$self = (%$self, @_) if @_;
 
@@ -52,7 +49,7 @@ sub send {
       qw(username password recipient message);
   return $self->handle_error({
     message => sprintf('Missing parameters (%s)', join ',', @missing),
-    code => -2
+    advice => -2
   } => $cb) if @missing;
 
   # Clean up recipient
@@ -73,15 +70,15 @@ sub send {
 }
 
 sub submit {
-  my ($self, $location, $cb) = @_;
+  my ($self, $url, $cb) = @_;
   # Call the gateway
   local $ENV{MOJO_USERAGENT_DEBUG} = !! $ENV{MOJAR_SMS_DEBUG};
   if ($cb) {
-    $self->ua->get($location => sub { _check_status($self, $cb, @_) });
+    $self->ua->get($url => sub { _check_status($self, $cb, @_) });
     return $self;
   }
   else {
-    my $tx = $self->ua->get($location);
+    my $tx = $self->ua->get($url);
     return _check_status($self, $cb, undef, $tx);
   }
 }
@@ -90,16 +87,16 @@ sub _check_status {
   my ($self, $cb, undef, $tx) = (@_);
 
   # Check http errors
-  my ($error, $code);
+  my ($error, $advice);
   return $self->handle_error($error => $cb) if $error = $tx->error;
 
   # Check service errors
   eval {
-    @$error{'code', 'message'} = split /\|/, $tx->res->body;
-    length($code = $error->{code} //= '-3') == 1 and $code == 0;
+    @$error{'advice', 'message'} = split /\|/, $tx->res->body;
+    length($advice = $error->{advice} //= '-3') == 1 and $advice == 0;
   }
   or do {
-    @$error{'code', 'message'} = (-4, $@) if $@;
+    @$error{'advice', 'message'} = (-4, $@) if $@;
     return $self->handle_error($error => $cb);
   };
 
@@ -110,7 +107,7 @@ sub _check_status {
 sub handle_error {
   my ($self, $error, $cb) = @_;
   $self->log->error(sprintf 'Failed with %u:%s',
-      $error->{code} //= 418, $error->{message} //= 'coded failure');
+      $error->{advice} //= 418, $error->{message} //= 'coded failure');
   return $cb ? $cb->($self, $error) : undef;
 }
 
@@ -135,14 +132,15 @@ Mojar::Message::BulkSms - Send SMS via BulkSMS services.
   my $sms = Mojar::Message::BulkSms->new(username => ..., password => ...);
 
   # Synchronous
-  $sms->send(message => q{Team, have we used up all our credits yet?},
+  $sms->message(q{Team, have we used up all our credits yet?}),
       ->send(recipient => '0776 432 111')
       ->send(recipient => '0778 888 123');
 
   # Asynchronous
-  $sms->send(message => q{Team, please check the async responses},
-      ->send(recipient => $recipient[0] => sub { $error[0] = $_[1]; $_[0]})
-      ->send(recipient => $recipient[1] => sub { $error[1] = $_[1]; $_[0]});
+  my @error;
+  $sms->message(q{Team, please check the async responses}),
+      ->send(recipient => $recipient[0] => sub { $error[0] = $_[1] })
+      ->send(recipient => $recipient[1] => sub { $error[1] = $_[1] });
 
 =head1 DESCRIPTION
 

@@ -1,3 +1,6 @@
+1.053 2014-08-20
+  * Fixed docn and error fields, s/code/advice/ (Smtp).
+
 1.052 2014-08-19
   * Fixed bug in developer test (Smtp).
 
