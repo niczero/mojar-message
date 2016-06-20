@@ -38,7 +38,7 @@ has log => sub { Mojar::Log->new };
 
 sub send {
   my $self = shift;
-  my $cb = pop if @_ and ref $_[-1] eq 'CODE';
+  my $cb = @_ && ref $_[-1] eq 'CODE' ? pop : undef;
   return $self->handle_error({
     message => sprintf('Unhandled args (%s)', join ',', @_),
     advice => -1

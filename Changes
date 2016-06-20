@@ -1,34 +1,33 @@
+1.061 2016-06-20
+  - Avoid conditional declaration (BulkSms).
+
 1.053 2014-08-20
-  * Fixed docn and error fields, s/code/advice/ (Smtp).
-
-1.052 2014-08-19
-  * Fixed bug in developer test (Smtp).
-
-1.051 2014-08-05
-  * Added reset method (Smtp).
+  - Add reset method (Smtp).
+  - Fix bug in developer test (Smtp).
+  - Fix docn and error fields, s/code/advice/ (Smtp).
 
 1.041 2014-08-04
-  * Fixed 'Sender' (Smtp).
+  - Fix 'Sender' (Smtp).
 
 1.031 2014-07-30
-  * Added attachments (Smtp).
+  - Add attachments (Smtp).
 
 1.021 2014-07-27
-  * Added SMTP sender (Smtp).
+  - Add SMTP sender (Smtp).
 
 1.011 2014-06-09
-  * Added asynchronous support (BulkSms).
+  - Add asynchronous support (BulkSms).
 
 1.001 2014-06-02
-  * First public release.
-  * Made some functionality overrideable (BulkSms).
+  - First public release.
+  - Make some functionality overrideable (BulkSms).
 
 0.111 2013-08-09
-  * Extended test scope via mocking (BulkSms).
-  * Improved convenience via stashing (BulkSms).
-  * Improved checking of parameters (BulkSms).
+  - Extend test scope via mocking (BulkSms).
+  - Improve convenience via stashing (BulkSms).
+  - Improve checking of parameters (BulkSms).
 
 0.102 2013-08-04
-  * Initial release.
-  * Made less synchronous.
-  * Improved documentation and build vars.
+  - Initial release.
+  - Made less synchronous.
+  - Improve documentation and build vars.
