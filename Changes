@@ -1,3 +1,7 @@
+1.101 2017-05-04
+  - Support HTML email bodies (Smtp).
+  - Upgrade for Mojolicious v7.15.
+
 1.061 2016-06-20
   - Avoid conditional declaration (BulkSms).
 
