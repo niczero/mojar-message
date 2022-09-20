@@ -10,6 +10,7 @@ BEGIN {
 
 use Mojar::Config;
 use Mojar::Message::Telegram;
+use Mojo::Promise;
 
 plan skip_all => 'set TEST_TELEGRAM to enable this test (developer only!)'
   unless my $filename = $ENV{TEST_TELEGRAM};
@@ -25,33 +26,45 @@ subtest q{Synchronous} => sub {
   ), 'construct Telegram agent';
   ok $msg->send(
     message   => 'First test message',
+    quiet     => 1,
     recipient => $recipient,
   ), 'send first message (sync)';
   ok $msg->send(
     message   => "Second message: \N{U+26A0} \N{U+2714} \N{U+2620}",
+    quiet     => 1,
     recipient => $recipient,
   )->send(
     message   => "Third message: \N{U+1F4A9}",
+    quiet     => 1,
     recipient => $recipient,
   ), 'send more messages (sync)';
 };
 
-#subtest q{Asynchronous} => sub {
-#  my @results;
-#  my $delay = Mojo::IOLoop->delay;
-#  my @end = ($delay->begin, $delay->begin);
-#  ok $msg->send(message => 'First asynchronous message' => sub {
-#    my ($s, $e) = @_;
-#    $results[0]++;
-#    $end[0]->();
-#  })
-#      ->send(message => 'Second asynchronous message' => sub {
-#    $results[1]++;
-#    $end[1]->();
-#  }), 'Sent async';
-#  $delay->wait;
-#  ok $results[0], 'First callback';
-#  ok $results[1], 'Second callback';
-#};
+subtest q{Asynchronous} => sub {
+  my @results;
+  my $promise0 = Mojo::Promise->new;
+  my $promise1 = Mojo::Promise->new;
 
-done_testing();
+  ok $msg->send(
+    message   => 'First asynchronous message',
+    quiet     => 1,
+    recipient => $recipient,
+    sub { $_[1] ? $promise0->reject($_[1]{message}) : $promise0->resolve(1) }
+  )->send(
+    message   => 'Second asynchronous message',
+    quiet     => 1,
+    recipient => $recipient,
+    sub { $_[1] ? $promise1->reject($_[1]{message}) : $promise1->resolve(1) }
+  ), 'send messages async';
+  Mojo::Promise->all($promise0, $promise1)->then(sub {
+    @results = @_;
+  })->catch(sub {
+    my ($err) = @_;
+    fail "Could not send message: $err";
+  })->wait;
+
+  ok $results[0], 'First callback';
+  ok $results[1], 'Second callback';
+};
+
+done_testing;

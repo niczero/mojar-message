@@ -6,13 +6,14 @@ use Mojo::URL;
 use Mojo::UserAgent;
 use Mojo::Util qw(dumper);
 
-our $VERSION = 0.001;
+our $VERSION = 0.021;
 
 # Attributes
 
 has address => 'api.telegram.org';
 has scheme  => 'https';
 has 'token';
+has ua => sub { Mojo::UserAgent->new };
 
 has in  => sub { [] };
 has out => sub { [] };
@@ -28,8 +29,9 @@ sub send {
     : croak 'Bad args';
 
   my @param = (
-    chat_id => $args{recipient},
-    text    => $args{message},
+    chat_id              => $args{recipient},
+    disable_notification => $args{quiet},
+    text                 => $args{message},
   );
   push @param, $cb if $cb;
 
@@ -45,7 +47,7 @@ sub submit {
     ->host($self->address)
     ->path(sprintf 'bot%s/%s', $self->token, $method);
 
-  my $ua = Mojo::UserAgent->new;
+  my $ua = $self->ua;
   my $headers = {};
   my $tx = $ua->build_tx('POST', $url, $headers, json => \%payload);
 
@@ -116,6 +118,14 @@ beforehand.
 
   $msg->token('123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11');
 
+=item * ua
+
+  $msg->ua($this_agent);
+  my $ua = $msg->ua;
+
+The user agent persists in an attribute of the object and you can supply your
+own at creation time.
+
 =back
 
 =head1 METHODS
@@ -134,6 +144,7 @@ Constructor for the Telegram agent.
 
 Supports method chaining, and will bail-out at the first failure if no callback
 is given.
+Supports asynchronous calls when provided a callback as the final argument.
 
   $msg->send(message => q{...}, recipient => ..., sub {
     my ($agent, $error) = @_;
@@ -142,7 +153,8 @@ is given.
 
   $sms->send(message => $m, recipient => $r, sub { ++$error_count if $_[1] });
 
-Also supports asynchronous calls when provided a callback as the final argument.
+You can also send messages without triggering a notification by including the
+C<quiet => 1> parameter.
 
 =back
 
